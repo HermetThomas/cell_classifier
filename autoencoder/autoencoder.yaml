@@ -1,0 +1,19 @@
+name: autoencoder
+channels:
+  - bioconda
+  - conda
+  - Quantopian
+  - conda-forge
+  
+dependencies:
+  - python
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - pip
+  - scikit-learn
+  - shap
+  - tensorflow
+  - pytorch
+  - tqdm
