@@ -18,7 +18,7 @@ from itertools import product
 from functools import reduce
 from scipy.sparse import issparse
 from bioservices import KEGG
-from CRISPR_functions import *
+from classifier_functions import *
 
 import importlib
 
