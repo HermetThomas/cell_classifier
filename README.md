@@ -1,5 +1,5 @@
 # cell_classifier
-Derivation of the CRISPR_demux repository to analyze datasets using HTO only 
+Derivation of the CRISPR_demux repository to analyze datasets using Hashtag Oligonucleotides.
 
 This repository contains a Python script used to exctract discriminating genes between the various conditions in your dataset.
 
