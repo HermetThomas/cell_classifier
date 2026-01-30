@@ -10,7 +10,9 @@ We added an option to fetch in the KEGG database the biological pathways in whic
 The AutoEncoder used to perform the classification was developed by Barlaud M. and Guyard F. and published in the following papers :
 
 Michel Barlaud, Frédéric Guyard : *Learning sparse deep neural networks using efficient structured projections on convex constraints for green ai.* ICPR 2020 Milan Italy (2020) doi : 10.1109/ICPR48806.2021.9412162
+
 and 
+
 David Chardin, Cyprien Gille, Thierry Pourcher and Michel Barlaud : *Accurate Diagnosis with a confidence score using the latent space of a new Supervised Autoencoder for clinical metabolomic studies.* BMC Informatics 2022 doi: 10.1186/s12859-022-04900-x
 
 # Table of contents 
