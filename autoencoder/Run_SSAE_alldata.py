@@ -94,8 +94,6 @@ def proj_l11_netBio(guidename, Guide, results_dir = None, HTOname = None, eta = 
     criterion_classification = nn.CrossEntropyLoss(reduction="sum")
 
     TIRO_FORMAT = True
-    # file_name = "LUNG.csv"
-    # file_name = "BRAIN_MID.csv"
 
     if HTOname == None :
         file_name = guidename
@@ -128,7 +126,7 @@ def proj_l11_netBio(guidename, Guide, results_dir = None, HTOname = None, eta = 
         # TYPE_PROJ = ft.proj_l21ball   # projection l21
         TYPE_PROJ_NAME = TYPE_PROJ.__name__
 
-    AXIS = 0  #  for PGL21
+    AXIS = 0
 
     # Top genes params
     DoTopGenes = True  # Compute feature rankings
@@ -177,7 +175,7 @@ def proj_l11_netBio(guidename, Guide, results_dir = None, HTOname = None, eta = 
 
     X = scale(X, axis=0)
 
-    for index, label in enumerate(label_name):  # convert string labels to numero (0,1,2....)
+    for index, label in enumerate(label_name):  # convert string labels to numbers (0,1,2....)
         Y = np.where(Y == label, index, Y)
     Y = Y.astype(np.int64)
 
@@ -574,7 +572,7 @@ def proj_l11_netBio(guidename, Guide, results_dir = None, HTOname = None, eta = 
     # Do pca,tSNE for encoder data
     if Do_pca and Do_tSNE:
         tit = "Latent Space"
-        ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
+        # ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
 
     if DoTopGenes:
         df = pd.read_csv(
@@ -1198,7 +1196,7 @@ def proj_l11_LeNet(guidename, Guide, results_dir = None, HTOname = None, eta = 2
     # Do pca,tSNE for encoder data
     if Do_pca and Do_tSNE:
         tit = "Latent Space"
-        ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
+        # ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
 
     if DoTopGenes:
         df = pd.read_csv(
@@ -1882,7 +1880,7 @@ def proj_infinity_netBio(guidename, Guide, results_dir = None, HTOname = None, e
     # Do pca,tSNE for encoder data
     if Do_pca and Do_tSNE:
         tit = "Latent Space"
-        ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
+        # ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
 
     if DoTopGenes:
         df = pd.read_csv(
@@ -2594,7 +2592,7 @@ def proj_infinity_LeNet(guidename, Guide, results_dir = None, HTOname = None, et
     # Do pca,tSNE for encoder data
     if Do_pca and Do_tSNE:
         tit = "Latent Space"
-        ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
+        # ft.ShowPcaTsne(X, Y, data_encoder, center_distance, class_len, tit)
 
     if DoTopGenes:
         df = pd.read_csv(
