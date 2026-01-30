@@ -19,6 +19,15 @@ def dir_path(path : str):
             return path
         else:
             raise NotADirectoryError(path)
+        
+        
+def file_path(path : str):
+
+        if os.path.isfile(path):
+            return path
+        else:
+            raise FileNotFoundError(path)
+        
 
 def create_results_folder(base_folder="autoencoder/results_stat/"):
     numerical_suffix = max([int(folder[-3:]) for folder in os.listdir(base_folder) if folder.startswith("results_") and folder[-3:].isdigit()], default=0) + 1
@@ -138,26 +147,26 @@ def weight_expression(results_dir, condition, expression_df) :
     df['color'] = df['log2_FC'].apply(lambda x: determine_color(x))
     df.to_csv(f'{results_dir}/{condition}/weight_expression.csv', index=False)
 
-def top_genes(results_dir, targets_names, hto_names=None, pathways = False) :
+def top_genes(results_dir, conditions, hto_names=None, pathways = False) :
     
     colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
-                    for i in range(len(hto_names))]
+                    for i in range(len(conditions))]
     
-    targets = [target for target in targets_names if target in os.listdir(results_dir)]
+    conditions = [condition for condition in conditions if condition in os.listdir(results_dir)]
 
     if hto_names != None :
 
-        for target in tqdm(targets) :
+        for condition in tqdm(conditions) :
             
             plt.figure()
-            htos = [hto for hto in hto_names if hto in os.listdir(f'{results_dir}/{target}')]
+            htos = [hto for hto in hto_names if hto in os.listdir(f'{results_dir}/{condition}')]
             _, axes = plt.subplots(nrows=1, ncols=len(htos), figsize=(21, 11))
 
             for HTO_idx,HTO in enumerate(htos):   
-                if os.path.isfile(f'{results_dir}/{target}/{HTO}/weight_expression.csv') : 
-                    top = pd.read_csv(f'{results_dir}/{target}/{HTO}/weight_expression.csv', header=0).nlargest(30, 'Weight')   
-                    acc_file = next((file for file in os.listdir(f'{results_dir}/{target}/{HTO}') if 'acc' in file), None)      
-                    acc = round(pd.read_csv(f'{results_dir}/{target}/{HTO}/{acc_file}', header=0, index_col=0, sep=';').Global.loc['Mean'], 2)    
+                if os.path.isfile(f'{results_dir}/{condition}/{HTO}/weight_expression.csv') : 
+                    top = pd.read_csv(f'{results_dir}/{condition}/{HTO}/weight_expression.csv', header=0).nlargest(30, 'Weight')   
+                    acc_file = next((file for file in os.listdir(f'{results_dir}/{condition}/{HTO}') if 'acc' in file), None)      
+                    acc = round(pd.read_csv(f'{results_dir}/{condition}/{HTO}/{acc_file}', header=0, index_col=0, sep=';').Global.loc['Mean'], 2)    
                     axes[HTO_idx].barh(top['Gene'], top['Weight'], color = colors[HTO_idx])
                     axes[HTO_idx].set_xlabel('Mean weight')
                     axes[HTO_idx].set_ylabel('Gene')
@@ -173,7 +182,7 @@ def top_genes(results_dir, targets_names, hto_names=None, pathways = False) :
 
                         genes_info.Gene = top.nlargest(20, 'Mean').Features
 
-                        print(f"Searching pathways for {target}_{HTO} top genes")
+                        print(f"Searching pathways for {condition}_{HTO} top genes")
 
                         for gene in trange(len(genes_info)) :
                             pathways_info = get_pathways(genes_info.Gene.loc[gene])
@@ -190,40 +199,44 @@ def top_genes(results_dir, targets_names, hto_names=None, pathways = False) :
 
                             genes_info.Pathways.loc[gene] = ' & '.join(pathways_list)
 
-                        genes_info.to_csv(f"{results_dir}/{target}/{HTO}/topGenes_pathways.csv", index = False, sep = ';')
+                        genes_info.to_csv(f"{results_dir}/{condition}/{HTO}/topGenes_pathways.csv", index = False, sep = ';')
                 else :
                     pass    
-            plt.suptitle(f"Most discriminant Features for {target}", fontsize = 30)
+            plt.suptitle(f"Most discriminant Features for {condition}", fontsize = 30)
             plt.tight_layout()
-            plt.savefig(f"{results_dir}/{target}/top_genes.png")
+            plt.savefig(f"{results_dir}/{condition}/top_genes.png")
             plt.close()
             
 
     else :
 
-        for target in tqdm(targets) :
-            if os.path.isfile(f'{results_dir}/{target}/weight_expression.csv') :
-                top = pd.read_csv(f'{results_dir}/{target}/weight_expression.csv', header=0).nlargest(30, 'Weight') 
-                acc_file = next((file for file in os.listdir(f'{results_dir}/{target}/{HTO}') if 'acc' in file), None)      
-                acc = round(pd.read_csv(f'{results_dir}/{target}/{HTO}/{acc_file}', header=0, index_col=0, sep=';').Global.loc['Mean'], 2)
-                plt.figure()
+        for condition in tqdm(conditions) :
+            if os.path.isfile(f'{results_dir}/{condition}/weight_expression.csv') :
+                top = pd.read_csv(f'{results_dir}/{condition}/weight_expression.csv', header=0).nlargest(30, 'Weight') 
+                acc_file = next((file for file in os.listdir(f'{results_dir}/{condition}') if 'acc' in file), None)      
+                acc = round(pd.read_csv(f'{results_dir}/{condition}/{acc_file}', header=0, index_col=0, sep=';').Global.loc['Mean'], 2)
+                
+                fig, ax = plt.subplots()
 
-                bars = plt.barh(top['Gene'], top['Weight'], color = "royalblue")
-                for i, tick in enumerate(bars.get_yticklabels()):  # Loop through tick labels
-                        tick.set_color(top['color'].loc[i])
+                bars = ax.barh(top['Gene'], top['Weight'], color="royalblue")
+
+                # Modify y-tick label colors
+                for i, tick in enumerate(ax.get_yticklabels()):
+                    tick.set_color(top['color'].iloc[i])
+                    
                 plt.xlabel("Mean weight")
                 plt.ylabel("Gene")
-                plt.title(f'{target} - accuracy : {acc}')
+                plt.title(f'{condition} - accuracy : {acc}')
                 plt.gca().invert_yaxis()
                 
-                plt.savefig(f"{results_dir}{target}/top_genes.png")
+                plt.savefig(f"{results_dir}/{condition}/top_genes.png")
 
                 if pathways == True :
                     genes_info = pd.DataFrame(columns = ['Gene', 'Pathways'])
 
                     genes_info.Gene = top.nlargest(20, 'Weight').Features
 
-                    print(f"Searching for pathways for {target} top genes")
+                    print(f"Searching for pathways for {condition} top genes")
                     for gene in trange(len(genes_info)) :
                         pathways = get_pathways(genes_info.Gene.loc[gene])
 
@@ -239,7 +252,7 @@ def top_genes(results_dir, targets_names, hto_names=None, pathways = False) :
 
                         genes_info.Pathways.loc[gene] = ' & '.join(pathways_list)
                     
-                    genes_info.to_csv(f"{results_dir}/{target}/topGenes_Pathways.csv", index = False)
+                    genes_info.to_csv(f"{results_dir}/{condition}/topGenes_Pathways.csv", index = False)
 
 
 def getcloser(x, yfit, xnew):
@@ -515,6 +528,7 @@ def distrib_classif(results_dir, condition, df, eta='', run='') :
     else :
         plt.savefig(f'{results_dir}/{condition}/Perturbation_score.png')    
     plt.close()
+
 
 def accuracy_heatmap(results_dir, targets, hto_names) :
     df2 = pd.DataFrame(columns=hto_names)
