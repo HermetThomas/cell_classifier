@@ -26,7 +26,8 @@ David Chardin, Cyprien Gille, Thierry Pourcher and Michel Barlaud : *Accurate Di
 ## **Repository Content**
 |File/Folder|Description|
 |:-:|:-:|
-|cell_classifier.py|Script to launch|
+|cell_classifier.py|Script to run for analysis|
+|classifier_functions.py|Various functions used in main script|
 |autoencoder/|Contains the AutoEncoder sript and functions it calls|
 |requirements.txt|Python packages required to run the script|
 
