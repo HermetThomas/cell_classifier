@@ -2,7 +2,7 @@
 
 This repository contains a Python script used to exctract discriminating genes between two conditions in your dataset.
 
-The script takes as input a pre-processed single-cell anndata object (.h5ad format) and performs a
+The script takes as input a pre-processed single-cell anndata object (.h5ad format)
 
 We use a supervised AutoEncoder to find top discriminant features between a condition of interest and a control condition. 
 We added an option to fetch in the KEGG database the biological pathways in which these discriminant genes are implicated, with the use of the BioServices package.
